@@ -1,3 +1,4 @@
+#deploy
 name: CI/CD Pipeline for Cloud Run
 
 on:
