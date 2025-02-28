@@ -3,35 +3,30 @@ name: CI/CD Pipeline for Cloud Run
 on:
   push:
     branches:
-      - main  # Remplace par la branche de ton choix, si ce n'est pas 'main'
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Étape 1 : Checkout du code
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Étape 2 : Installer Google Cloud SDK
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
         with:
-          project_id: ctp-top-jessy  # Remplace par ton nom de projet
+          project_id: ctp-top-jessy
           credentials: ${{ secrets.GCP_CREDENTIALS }}
 
-      # Étape 3 : Authentification avec GCP
       - name: Authenticate to Google Cloud
         run: gcloud auth activate-service-account --key-file="${{ secrets.GCP_CREDENTIALS }}"
 
-      # Étape 4 : Construire l'image Docker et la pousser vers Google Container Registry (GCR)
       - name: Build and push Docker image to Google Container Registry
         run: |
           docker build -t gcr.io/ctp-top-jessy/mon-app .
           docker push gcr.io/ctp-top-jessy/mon-app
 
-      # Étape 5 : Déployer sur Google Cloud Run
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy mon-app \
